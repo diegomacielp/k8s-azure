@@ -255,6 +255,7 @@ resource "azurerm_lb_backend_address_pool" "template_lb_backend_address_pool" {
   loadbalancer_id                = azurerm_lb.template_lb.id
   name                           = "${var.base_name}-lb_backend_address_pool"
 }
+
 #LB Backend Address Pool Association
 resource "azurerm_network_interface_backend_address_pool_association" "template_lb_pool_association" {
   count                          = var.vm_count
