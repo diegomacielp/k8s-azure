@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    environment {
+        AZURE_SUBSCRIPTION_ID = "${param_azure_subscription_id}"
+        AZURE_TENANT_ID = "${param_azure_tenant_id}"
+        AZURE_CLIENT_ID = "${param_azure_client_id}"
+        AZURE_CLIENT_SECRET = credentials('azure_client_secret')
+        TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
+        TERRAFORM_VM_RG_NAME = "${param_terraform_vm_rg_name}"
+        TERRAFORM_VM_VNET_NAME = "${param_terraform_vm_vnet_name}"
+        TERRAFORM_VM_SUBNET_NAME = "${param_terraform_vm_subnet_name}"
+    }
+    stages {
+        stage('VM_Provisioning') {
+            agent {
+                docker { 
+                    image 'hashicorp/terraform:0.12.26'
+                    args '-i --network host -v "$TERRAFORM_STATE_DIR":/backend --entrypoint='
+                }
+            }
+            steps {
+                dir(path: 'infra/terraform/') {
+                    sh 'terraform init'
+                    sh 'terraform destroy -force -lock=false -var-file terraform.tfvars \
+                         -var "azure_subscription_id=$AZURE_SUBSCRIPTION_ID" \
+                         -var "azure_tenant_id=$AZURE_TENANT_ID" \
+                         -var "azure_client_id=$AZURE_CLIENT_ID" \
+                         -var "vm_rg_name=$TERRAFORM_VM_RG_NAME" \
+                         -var "vm_vnet_name=$TERRAFORM_VM_VNET_NAME" \
+                         -var "vm_subnet_name=$TERRAFORM_VM_SUBNET_NAME" \
+                         -var "azure_client_secret=$AZURE_CLIENT_SECRET"'
+                }
+            }
+        }
+    }
+}
