@@ -46,7 +46,7 @@ pipeline {
         }
       }
       steps {
-        dir(path: 'infra/terraform/') { 
+        dir(path: 'terraform/') { 
           sh 'terraform init'
           sh 'terraform plan -var-file terraform.tfvars \
             -var"azure_subscription_id=$AZURE_SUBSCRIPTION_ID"\
