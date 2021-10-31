@@ -1,11 +1,11 @@
 # Region and project general configuration
 vm_region = "East US 2"
 
-vm_rg_name = "workshop-trt"
+vm_rg_name = "workshop"
 
-vm_vnet_name = "workshop-trt"
+vm_vnet_name = "workshop"
 
-vm_subnet_name = "workshop-trt"
+vm_subnet_name = "workshop"
 
 vm_environment = "PJe Lab"
 
@@ -18,7 +18,7 @@ vm_ip_base = "192.168.1.4"
 
 vm_size = "Standard_D2s_v3"
 
-vm_environment_tag = "PJe Lab"
+vm_environment_tag = "K8S Setup"
 
 vm_image_publisher = "OpenLogic"
 
@@ -43,5 +43,4 @@ vm_managed_disk_size = 50
 
 vm_managed_disk_lun_base = 10
 
-vm_profile_user = "trt12"
-
+vm_profile_user = "k8s"
