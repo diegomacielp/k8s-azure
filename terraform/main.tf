@@ -126,17 +126,6 @@ resource "azurerm_public_ip" "template_public_ip_lb_ingress_externo" {
     environment = var.vm_environment_tag
   }
 }
-# Public IP Ingress Redejt
-resource "azurerm_public_ip" "template_public_ip_lb_ingress_redejt" {
-  name                = "${var.base_name}-lb-ingress-redejt"
-  location            = var.vm_region
-  resource_group_name = var.vm_rg_name
-  allocation_method   = "Dynamic"
-  domain_name_label   = "lb-redejt-${var.azure_client_id}"
-  tags = {
-    environment = var.vm_environment_tag
-  }
-}
 #LB Frontend
 resource "azurerm_lb" "template_lb" {
   name                = "${var.base_name}-lb"
@@ -150,10 +139,6 @@ resource "azurerm_lb" "template_lb" {
   frontend_ip_configuration {
     name                 = "ingress-externo"
     public_ip_address_id = azurerm_public_ip.template_public_ip_lb_ingress_externo.id
-  }
-  frontend_ip_configuration {
-    name                 = "ingress-redejt"
-    public_ip_address_id = azurerm_public_ip.template_public_ip_lb_ingress_redejt.id
   }
 }
 #LB Rules
@@ -225,40 +210,6 @@ resource "azurerm_lb_rule" "template_lb_ingress_externo_rule_9101" {
   probe_id                       = azurerm_lb_probe.template_lb_probe_externo_31101.id
 }
 
-resource "azurerm_lb_rule" "template_lb_ingress_redejt_rule_80" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_redejt_rule_80"
-  protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 32080
-  frontend_ip_configuration_name = "ingress-redejt"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_redejt_32080.id
-}
-resource "azurerm_lb_rule" "template_lb_ingress_redejt_rule_443" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_redejt_rule_443"
-  protocol                       = "Tcp"
-  frontend_port                  = 443
-  backend_port                   = 32443
-  frontend_ip_configuration_name = "ingress-redejt"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_redejt_32443.id
-}
-resource "azurerm_lb_rule" "template_lb_ingress_redejt_rule_9101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_redejt_rule_9101"
-  protocol                       = "Tcp"
-  frontend_port                  = 9101
-  backend_port                   = 32101
-  frontend_ip_configuration_name = "ingress-redejt"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_redejt_32101.id
-}
-
 #LB Probes
 resource "azurerm_lb_probe" "template_lb_probe_interno_30080" {
   resource_group_name            = var.vm_rg_name
@@ -296,25 +247,6 @@ resource "azurerm_lb_probe" "template_lb_probe_externo_31101" {
   loadbalancer_id                = azurerm_lb.template_lb.id
   name                           = "${var.base_name}-lb_probe_externo_31101"
   port                           = 31101
-}
-
-resource "azurerm_lb_probe" "template_lb_probe_redejt_32080" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_redejt_32080"
-  port                           = 32080
-}
-resource "azurerm_lb_probe" "template_lb_probe_redejt_32443" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_redejt_32443"
-  port                           = 32443
-}
-resource "azurerm_lb_probe" "template_lb_probe_redejt_32101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_redejt_32101"
-  port                           = 32101
 }
 
 #LB Backend Address pool
