@@ -8,3 +8,6 @@ Setup para a VM Jenkins
 - Criar uma subnet na vnet acima com endereçamento 192.168.1.0/24.
 - Criar uma vm pro jenkins (1 vcpu, 3,5GB de RAM and a public IP is enough) na subnet acima.
 - Instalar docker, git e jenkins na vm.
+- Instalar os plugins no Jenkins: Credentials
+- Criar as credenciais no Jenkins conforme nesta [imagem]
+  > Cloe a saída ddo comando **"cat id_rsa | base64 -w0"** na credencial "azure_nodes_admin_ssh_privkey".
