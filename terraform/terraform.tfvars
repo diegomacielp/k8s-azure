@@ -1,8 +1,8 @@
 # Region and project general configuration
 vm_region = "East US 2"
-vm_rg_name = "k8s-setup"
-vm_vnet_name = "k8s-setup-vnet"
-vm_subnet_name = "subnet"
+vm_rg_name = "workshop-k8s"
+vm_vnet_name = "workshop-k8s"
+vm_subnet_name = "workshop-k8s"
 vm_environment = "K8S Setup"
 vm_count = 4
 
