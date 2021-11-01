@@ -1,13 +1,13 @@
 # Region and project general configuration
 vm_region = "East US 2"
-vm_rg_name = "workshop-k8s"
-vm_vnet_name = "workshop-k8s"
-vm_subnet_name = "workshop-k8s"
-vm_environment = "K8S Setup"
+vm_rg_name = "workshop-trt"
+vm_vnet_name = "workshop-trt"
+vm_subnet_name = "workshop-trt"
+vm_environment = "K8S Setp"
 vm_count = 4
 
 # VM
-base_name = "k8s-setup"
+base_name = "pjelab"
 vm_ip_base = "192.168.1.4"
 vm_size = "Standard_D2s_v3"
 vm_environment_tag = "K8S Setup"
