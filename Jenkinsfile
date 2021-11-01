@@ -48,7 +48,7 @@ pipeline {
             steps {
                 dir(path: 'terraform/') { 
                     sh 'terraform init' 
-                    sh 'terraform plan -var-file terraform.tfvars \
+                    sh 'terraform plan -var-file -lock=false terraform.tfvars \
                         -var "azure_subscription_id=$AZURE_SUBSCRIPTION_ID" \
                         -var "azure_tenant_id=$AZURE_TENANT_ID" \
                         -var "azure_client_id=$AZURE_CLIENT_ID" \
