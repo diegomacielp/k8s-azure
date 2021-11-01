@@ -8,7 +8,7 @@ Setup para a VM e serviço do Jenkins
 - Criar uma subnet na vnet acima com endereçamento 192.168.1.0/24.
 - Criar uma vm pro jenkins (1 vcpu, 3,5GB de RAM and a public IP is enough) na subnet acima.
 - Instalar docker, git e jenkins na vm.
-- Instalar os plugins no Jenkins: Credentials, Git
+- Instalar os plugins no Jenkins: Credentials, Git, Pipeline
 - Criar as credenciais no Jenkins conforme esta [imagem](images/Credenciais_Jenkins.png). 
   > Cole a saída do comando **"cat id_rsa | base64 -w0"** na credencial "azure_nodes_admin_ssh_privkey".
 - Editar as variáveis do terraform e Jenkinsfile(TERRAFORM_VM_RG_NAME, TERRAFORM_VM_VNET_NAME, TERRAFORM_VM_SUBNET_NAME, TERRAFORM_BASE_NAME, CSJT_CLUSTER_VER, K8S_VERSION = 'v1.17.9', etc.).
