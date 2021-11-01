@@ -7,7 +7,7 @@ vm_environment = "K8S Setup"
 vm_count = 4
 
 # VM
-base_name = "k8s"
+base_name = "k8s-setup"
 vm_ip_base = "192.168.1.4"
 vm_size = "Standard_D2s_v3"
 vm_environment_tag = "K8S Setup"
