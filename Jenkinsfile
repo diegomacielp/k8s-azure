@@ -31,8 +31,7 @@ pipeline {
         TERRAFORM_VM_MANAGED_DISK_STORAGE_ACCOUNT_TYPE = "Standard_LRS"
         TERRAFORM_VM_MANAGED_DISK_CREATE_OPTION = "Empty"
         TERRAFORM_VM_MANAGED_DISK_SIZE = 50
-        TERRAFORM_VM_MANAGED_DISK_LUN_BASE = 10
-        CSJT_CLUSTER_VER = "${param_csjt_cluster_ver}"
+        TERRAFORM_VM_MANAGED_DISK_LUN_BASE = 1
         K8S_CNI = 'flannel'
         K8S_VERSION = "${param_k8s_version}"
         K8S_METRICS_SERVER_ENABLED = 'true'
