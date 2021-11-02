@@ -111,20 +111,20 @@ pipeline {
         }
     }
     stage('Gerando_Imagem_Kubespray') {
-            steps {
-                dir("${env.WORKSPACE}/infra") {
-                    sh 'mkdir cluster || true'
-                    dir("${env.WORKSPACE}/infra/cluster") {
-                        sh '[ -d .git ] || git init'
-                        sh 'git config http.sslVerify false'
-                        checkout([  $class: "GitSCM",
-                                    branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
-                                    extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
-                                    userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
-                                ])
-                        sh 'docker build -t ks kubespray'
-                    }
+        steps {
+            dir("${env.WORKSPACE}/infra") {
+                sh 'mkdir cluster || true'
+                dir("${env.WORKSPACE}/infra/cluster") {
+                    sh '[ -d .git ] || git init'
+                    sh 'git config http.sslVerify false'
+                    checkout([  $class: "GitSCM",
+                            branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
+                            extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
+                            userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
+                            ])
+                    sh 'docker build -t ks kubespray'
                 }
             }
         }
+    }
 }
