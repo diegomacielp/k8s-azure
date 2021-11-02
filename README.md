@@ -22,3 +22,4 @@ Para provisionamento das VMs, o jenkins utiliza um agente Docker para crair um c
 
 <img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/VMs.png">
 
+## Build da imagem Kubespray
