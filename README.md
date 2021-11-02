@@ -24,6 +24,6 @@ Para provisionamento das VMs, o jenkins utiliza um agente Docker para crair um c
 
 Caso necessite personalizar as VMs como quantidade de máquinas, sistema operaional, tamanho de disco e etc, edite o arquivo terraform/terraform.tfvars da melhor forma que atenda sua necessidade.
 
-<img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/Terraform_vm.png">
+<img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/Terraform_vms.png">
 
 ## Build da imagem Kubespray
