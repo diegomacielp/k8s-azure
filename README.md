@@ -15,4 +15,6 @@ Provisionamento de cluster Kubernetes vanilla em VMs Azure
 
 ## Provisionamento das VMs
 Para provisionamento das VMs, o jenkins utiliza um agente Docker para crair um contaoner da imagem 'hashicorp/terraform:0.12.26'. Em execução, o container inicializa o terraform no diretório terraform/ e cria todas as variáveis de ambiente com base nos valores passados anteriormente, concluindo essa etapa, o container faz login na azure e cria 4 VMs.
+
 <img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/VMs.png">
+
