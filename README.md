@@ -13,7 +13,7 @@ Provisionamento de cluster Kubernetes vanilla em VMs Azure
   > Cole a saída do comando **"cat id_rsa | base64 -w0"** na credencial "azure_nodes_admin_ssh_privkey".
 
 ## Criação do Pipeline
-No dashboard do Jenkins crie um job do tipo Pipeline, nele informe um parâmetro para cada variável existente no Jenkinsfile, na aba Pipeline informe o repositório https://github.com/diegomacielp/k8s-azure.git na branch main e em Script Path informe o arquivo Jenkinsfile.
+No dashboard do Jenkins crie um job do tipo Pipeline, nele informe um parâmetro para cada variável existente no Jenkinsfile, na aba <i>Pipeline</i> informe o repositório https://github.com/diegomacielp/k8s-azure.git na branch main e em <i>Script Path</i> o arquivo Jenkinsfile.
 
 ## Provisionamento das VMs
 Para provisionamento das VMs, o jenkins utiliza um agente Docker para crair um container da imagem 'hashicorp/terraform:0.12.26'. Em execução, o container inicializa o terraform no diretório terraform/ e cria todas as variáveis de ambiente com base nos valores passados anteriormente, concluindo essa etapa, o container faz login na azure e cria 4 VMs.
