@@ -32,6 +32,7 @@ pipeline {
         TERRAFORM_VM_MANAGED_DISK_CREATE_OPTION = "Empty"
         TERRAFORM_VM_MANAGED_DISK_SIZE = 50
         TERRAFORM_VM_MANAGED_DISK_LUN_BASE = 1
+        KUBESPRAY_VERSION = 'v2.15.0'
         K8S_CNI = 'flannel'
         K8S_VERSION = "${param_k8s_version}"
         K8S_METRICS_SERVER_ENABLED = 'true'
@@ -108,5 +109,22 @@ pipeline {
                 }
             }
         }
-    } 
+    }
+    stage('Gerando_Imagem_Kubespray') {
+            steps {
+                dir("${env.WORKSPACE}/infra") {
+                    sh 'mkdir cluster || true'
+                    dir("${env.WORKSPACE}/infra/cluster") {
+                        sh '[ -d .git ] || git init'
+                        sh 'git config http.sslVerify false'
+                        checkout([  $class: "GitSCM",
+                                    branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
+                                    extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
+                                    userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
+                                ])
+                        sh 'docker build -t ks kubespray'
+                    }
+                }
+            }
+        }
 }
