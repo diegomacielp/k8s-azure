@@ -124,5 +124,21 @@ pipeline {
                 }
             }
         }
+        stage('Preparando_VMs') {
+            agent {
+                docker { 
+                    image 'ks:latest'
+                    args '-i --privileged -u 0:0 --network host --entrypoint='
+                }
+            } 
+            steps {
+                dir("${env.WORKSPACE}/infra/kubernetes") {
+                    sh 'echo ${AZURE_NODES_ADMIN_SSH_PRIVKEY} | base64 -d > id_rsa'
+                    sh 'echo ${AZURE_NODES_ADMIN_SSH_PUBKEY} > id_rsa.pub'
+                    sh 'chmod 600 id_rsa* && chown ${JENKINS_ID}:${JENKINS_GID} id_rsa*'
+                    sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root --private-key=id_rsa nodes_bootstrap.yml'
+                }
+            }
+        }
     }
 }
