@@ -90,13 +90,3 @@
       when: 
         - "'master' in inventory_hostname"
         - "'1' in inventory_hostname"
-    - name: Setup postgresql
-      shell: |
-        yum install -y postgresql-server
-        postgresql-setup initdb || true
-        sed "s|^#listen_addresses = 'localhost'|listen_addresses = '*'|" -i /var/lib/pgsql/data/postgresql.conf
-        systemctl restart postgresql
-        systemctl enable postgresql
-      when: 
-        - "'master' in inventory_hostname"
-        - "'1' in inventory_hostname"
