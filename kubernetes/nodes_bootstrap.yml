@@ -106,21 +106,8 @@
         yum install -y postgresql-server
         postgresql-setup initdb || true
         sed "s|^#listen_addresses = 'localhost'|listen_addresses = '*'|" -i /var/lib/pgsql/data/postgresql.conf
-        sed "s|^host.*all.*all.*::.*ident$|host\tall\tpje\t192.168.1.0/24\ttrust|" -i /var/lib/pgsql/data/pg_hba.conf
         systemctl restart postgresql
         systemctl enable postgresql
-        su - postgres -c "createuser pje" || true
-        su - postgres -c "createdb -O pje pje_1grau" || true
-        su - postgres -c "createdb -O pje pje_2grau" || true
-        su - postgres -c "createdb -O pje sjt" || true
-        su - postgres -c "createdb -O pje job_imp" || true
-        su - postgres -c "createdb -O pje ctm_prd" || true
-        su - postgres -c "createdb -O pje sao" || true
-        su - postgres -c "createdb -O pje ege_1grau" || true
-        su - postgres -c "createdb -O pje ege_2grau" || true
-        su - postgres -c "createdb -O pje cer_prd" || true
-        su - postgres -c "createdb -O pje erc" || true
-        su - postgres -c "createdb -O pje gem_prd" || true
       when: 
         - "'master' in inventory_hostname"
         - "'1' in inventory_hostname"
