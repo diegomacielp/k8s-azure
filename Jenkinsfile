@@ -121,7 +121,7 @@ pipeline {
                                 extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
                                 userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
                                 ])
-                        sh 'docker build -t ks kubespray'
+                        sh 'docker build -t ks .'
                     }
                 }
             }
