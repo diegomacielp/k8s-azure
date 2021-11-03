@@ -68,16 +68,6 @@
       when: 
         - "'master' in inventory_hostname"
         - "'1' in inventory_hostname"
-    - name: Set owner for solr directory
-      file:
-        path: /var/lib/docker/nfsdata/solr
-        state: directory
-        mode: a+rwx,o-rwx,ug+s,+t,u-s,-t
-        owner: 8983
-        group: nfsnobody
-      when: 
-        - "'master' in inventory_hostname"
-        - "'1' in inventory_hostname"
     - name: Set owner for jms directory
       file:
         path: /var/lib/docker/nfsdata/jms
