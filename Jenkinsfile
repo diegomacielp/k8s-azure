@@ -119,6 +119,7 @@ pipeline {
                             extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
                             userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
                             ])
+                    sh 'sed -e "/ENV LANG=C.UTF-8/d" -e "/^FROM/a ENV LANG=C.UTF-8" -i Dockerfile'
                     sh 'docker build -t ks .'
                 }
             }
