@@ -28,19 +28,11 @@
           - open-vm-tools
           - nfs-utils
           - tzdata
-          - openvpn
         state: present
     - name: Upgrade all packages
       yum:
         name: '*'
         state: latest
-    - name: Copy openvpn client config
-      ansible.builtin.copy:
-        src: openvpn-pjelab-client.conf
-        dest: /etc/openvpn/client/pjelab.conf
-        owner: root
-        group: root
-        mode: '0640'
     - name: Disable firewalld
       service:
         name: firewalld
@@ -49,11 +41,6 @@
     - name: Enable ntp
       service:
         name: chronyd
-        state: started
-        enabled: yes
-    - name: Enable openvpn
-      service:
-        name: openvpn-client@pjelab
         state: started
         enabled: yes
     - name: Zerar conteudo nfsdata
