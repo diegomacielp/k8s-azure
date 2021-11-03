@@ -62,7 +62,6 @@
         - /var/lib/docker/nfsdata/prometheus
         - /var/lib/docker/nfsdata/grafana
         - /var/lib/docker/nfsdata/jms
-        - /var/lib/docker/nfsdata/solr
         - /var/lib/docker/nfsdata/gemini-ia
         - /var/lib/docker/nfsdata/extrator
       when: 
@@ -98,19 +97,6 @@
         sed "s|^#listen_addresses = 'localhost'|listen_addresses = '*'|" -i /var/lib/pgsql/data/postgresql.conf
         systemctl restart postgresql
         systemctl enable postgresql
-      when: 
-        - "'master' in inventory_hostname"
-        - "'1' in inventory_hostname"
-    - name: Copy solr data
-      ansible.builtin.copy:
-        src: dados-solr.tgz
-        dest: /var/tmp/dados-solr.tgz
-        owner: root
-        group: root
-        mode: '0640'
-    - name: Extract solr data 
-      shell: |
-        [ -f /var/lib/docker/nfsdata/solr/solr.xml ] || tar xvfz /var/tmp/dados-solr.tgz -C /var/lib/docker/nfsdata/solr && rm -f /var/tmp/dados-solr.tgz
       when: 
         - "'master' in inventory_hostname"
         - "'1' in inventory_hostname"
