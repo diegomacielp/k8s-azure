@@ -1,0 +1,152 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: Set timezone to America/Sao_Paulo
+      timezone:
+        name: America/Sao_Paulo
+    - name: Create a xfs filesystem on /dev/sdc
+      filesystem:
+        fstype: xfs
+        dev: /dev/sdc
+    - name: Mount /var/lib/docker
+      mount:
+        path: /var/lib/docker
+        src: /dev/sdc
+        fstype: xfs
+        state: mounted
+    - name: Install EPEL repo 
+      yum:
+        name:
+          - epel-release
+        state: present
+    - name: Install a list of packages 
+      yum:
+        name:
+          - vim
+          - ipvsadm
+          - net-tools
+          - open-vm-tools
+          - nfs-utils
+          - tzdata
+          - openvpn
+        state: present
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+    - name: Copy openvpn client config
+      ansible.builtin.copy:
+        src: openvpn-pjelab-client.conf
+        dest: /etc/openvpn/client/pjelab.conf
+        owner: root
+        group: root
+        mode: '0640'
+    - name: Disable firewalld
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+    - name: Enable ntp
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+    - name: Enable openvpn
+      service:
+        name: openvpn-client@pjelab
+        state: started
+        enabled: yes
+    - name: Zerar conteudo nfsdata
+      shell: rm -rf /var/lib/docker/nfsdata
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Create nfs exports dir
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: a+rwx,o-rwx,ug+s,+t,u-s,-t
+        owner: nfsnobody
+        group: nfsnobody
+      with_items:
+        - /var/lib/docker/nfsdata
+        - /var/lib/docker/nfsdata/esdata
+        - /var/lib/docker/nfsdata/esbackup
+        - /var/lib/docker/nfsdata/prometheus
+        - /var/lib/docker/nfsdata/grafana
+        - /var/lib/docker/nfsdata/jms
+        - /var/lib/docker/nfsdata/solr
+        - /var/lib/docker/nfsdata/gemini-ia
+        - /var/lib/docker/nfsdata/extrator
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Set owner for solr directory
+      file:
+        path: /var/lib/docker/nfsdata/solr
+        state: directory
+        mode: a+rwx,o-rwx,ug+s,+t,u-s,-t
+        owner: 8983
+        group: nfsnobody
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Set owner for jms directory
+      file:
+        path: /var/lib/docker/nfsdata/jms
+        state: directory
+        mode: a+rwx,o-rwx,ug+s,+t,u-s,-t
+        owner: 1001
+        group: nfsnobody
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Create /etc/exports
+      shell: find /var/lib/docker/nfsdata -mindepth 1 -maxdepth 1 -type d -exec echo "{} *(rw)" \; > /etc/exports
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Enable nfs server
+      service:
+        name: nfs
+        state: restarted
+        enabled: yes
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Setup postgresql
+      shell: |
+        yum install -y postgresql-server
+        postgresql-setup initdb || true
+        sed "s|^#listen_addresses = 'localhost'|listen_addresses = '*'|" -i /var/lib/pgsql/data/postgresql.conf
+        sed "s|^host.*all.*all.*::.*ident$|host\tall\tpje\t192.168.1.0/24\ttrust|" -i /var/lib/pgsql/data/pg_hba.conf
+        systemctl restart postgresql
+        systemctl enable postgresql
+        su - postgres -c "createuser pje" || true
+        su - postgres -c "createdb -O pje pje_1grau" || true
+        su - postgres -c "createdb -O pje pje_2grau" || true
+        su - postgres -c "createdb -O pje sjt" || true
+        su - postgres -c "createdb -O pje job_imp" || true
+        su - postgres -c "createdb -O pje ctm_prd" || true
+        su - postgres -c "createdb -O pje sao" || true
+        su - postgres -c "createdb -O pje ege_1grau" || true
+        su - postgres -c "createdb -O pje ege_2grau" || true
+        su - postgres -c "createdb -O pje cer_prd" || true
+        su - postgres -c "createdb -O pje erc" || true
+        su - postgres -c "createdb -O pje gem_prd" || true
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
+    - name: Copy solr data
+      ansible.builtin.copy:
+        src: dados-solr.tgz
+        dest: /var/tmp/dados-solr.tgz
+        owner: root
+        group: root
+        mode: '0640'
+    - name: Extract solr data 
+      shell: |
+        [ -f /var/lib/docker/nfsdata/solr/solr.xml ] || tar xvfz /var/tmp/dados-solr.tgz -C /var/lib/docker/nfsdata/solr && rm -f /var/tmp/dados-solr.tgz
+      when: 
+        - "'master' in inventory_hostname"
+        - "'1' in inventory_hostname"
