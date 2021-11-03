@@ -132,7 +132,7 @@ pipeline {
                 }
             } 
             steps {
-                dir("${env.WORKSPACE}/infra/kubernetes") {
+                dir("${env.WORKSPACE}/kubernetes") {
                     sh 'echo ${AZURE_NODES_ADMIN_SSH_PRIVKEY} | base64 -d > id_rsa'
                     sh 'echo ${AZURE_NODES_ADMIN_SSH_PUBKEY} > id_rsa.pub'
                     sh 'chmod 600 id_rsa* && chown ${JENKINS_ID}:${JENKINS_GID} id_rsa*'
