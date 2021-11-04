@@ -161,25 +161,5 @@ pipeline {
                 }
             }
         }
-	stage('Configurando_dashboard') {
-            agent {
-                docker { 
-                    image "dtzar/helm-kubectl"
-                    args "-i --privileged -u 0:0 --network host --entrypoint="
-                }
-            }
-            environment { 
-                KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
-            }
-            steps {
-                dir("${env.WORKSPACE}/cluster/kubernetes/dashboard") {
-                    sh 'sed -e "s/::.*$/::k8s-setup/" -i auth'
-                    sh 'cp ../../kubernetes/kubedash-install.exp install.exp'
-                    sh 'apk add expect'
-                    sh 'expect -f ./install.exp'
-                    sh 'rm -f install.exp'
-                }
-            }
-        }
     }
 }
