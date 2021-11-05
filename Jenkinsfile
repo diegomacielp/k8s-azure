@@ -169,7 +169,7 @@ pipeline {
                 }
             }
             steps {
-                dir("${env.WORKSPACE}/infra/kubernetes") { 
+                dir("${env.WORKSPACE}/kubernetes") { 
                     sh 'kubectl get no -oname | grep infra | while read node ; do kubectl label $node infra=true --overwrite ; done'
                     sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node pje=true --overwrite ; done'
                 }
