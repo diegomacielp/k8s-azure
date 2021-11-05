@@ -184,7 +184,7 @@ pipeline {
                 }
             }
             environment { 
-                KUBECONFIG = "${env.WORKSPACE}/infra/kubernetes/admin.conf"
+                KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
             }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") {
