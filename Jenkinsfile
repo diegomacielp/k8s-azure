@@ -36,6 +36,7 @@ pipeline {
         K8S_CNI = 'flannel'
         K8S_VERSION = "${param_k8s_version}"
         K8S_METRICS_SERVER_ENABLED = 'true'
+	K8S_DASHBOARD_VERSION = 'v2.3.1'
 
     }
     stages {
@@ -172,6 +173,22 @@ pipeline {
                 dir("${env.WORKSPACE}/kubernetes") { 
                     sh 'kubectl get no -oname | grep infra | while read node ; do kubectl label $node infra=true --overwrite ; done'
                     sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node pje=true --overwrite ; done'
+                }
+            }
+        }
+	stage('Configurando_dashboard') {
+            agent {
+                docker { 
+                    image "dtzar/helm-kubectl"
+                    args "-i --privileged -u 0:0 --network host --entrypoint="
+                }
+            }
+            environment { 
+                KUBECONFIG = "${env.WORKSPACE}/infra/kubernetes/admin.conf"
+            }
+            steps {
+                dir("${env.WORKSPACE}/kubernetes") {
+                    sh 'kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/${K8S_DASHBOARD_VERSION}/aio/deploy/recommended.yaml'
                 }
             }
         }
