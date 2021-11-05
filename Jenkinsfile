@@ -161,24 +161,17 @@ pipeline {
                 }
             }
         }
-	stage('Configurando_dashboard') {
+	stage('Configurando_Node_Labels') {
             agent {
                 docker { 
-                    image "dtzar/helm-kubectl"
-                    args "-i --privileged -u 0:0 --network host --entrypoint="
+                    image 'dtzar/helm-kubectl'
+                    args '-e KUBECONFIG=admin.conf -i --network host --entrypoint='
                 }
             }
-            environment { 
-                KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
-            }
             steps {
-                dir("${env.WORKSPACE}/kubernetes") {
-                    sh 'sed -e "s/::.*$/::k8sdash/" -i auth'
-                    sh 'cp ./kubedash-install.exp install.exp'
-                    sh 'sed -e "s/k8sdashboard.teste.com.br/dash.teste.com.br/" -i install.exp'
-                    sh 'apk add expect'
-                    sh 'expect -f ./install.exp'
-                    sh 'rm -f install.exp'
+                dir("${env.WORKSPACE}/infra/kubernetes") { 
+                    sh 'kubectl get no -oname | grep infra | while read node ; do kubectl label $node infra=true --overwrite ; done'
+                    sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node pje=true --overwrite ; done'
                 }
             }
         }
