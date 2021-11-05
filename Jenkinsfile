@@ -154,7 +154,7 @@ pipeline {
                         --extra-var metrics_server_enabled=$K8S_METRICS_SERVER_ENABLED /kubespray/cluster.yml' 
                     sh 'rm -f admin.conf || true'
                     sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
-			            --private-key=id_rsa -m fetch -a "src=/etc/kubernetes/admin.conf dest=./ flat=yes" \
+			--private-key=id_rsa -m fetch -a "src=/etc/kubernetes/admin.conf dest=./ flat=yes" \
                         $(cat inventory.ini |grep -v "^$" | fgrep "[kube-master]" -A1 | tail -1)'
                     sh 'chown ${JENKINS_ID}:${JENKINS_GID} admin.conf'
                     sh 'chmod 600 admin.conf'		
