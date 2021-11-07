@@ -163,34 +163,5 @@ pipeline {
                 }
             }
         }
-	stage('Configurando_Node_Labels') {
-            agent {
-                docker { 
-                    image 'dtzar/helm-kubectl'
-                    args '-e KUBECONFIG=admin.conf -i --network host --entrypoint='
-                }
-            }
-            steps {
-                dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node worker=true --overwrite ; done'
-                }
-            }
-        }
-	stage('Configurando_ingress_controller') {
-            agent {
-                docker { 
-                    image "dtzar/helm-kubectl"
-                    args "-i --privileged -u 0:0 --network host --entrypoint="
-                }
-            }
-	    environment {
-	        KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
-	    }
-	    steps {
-              sh 'helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts \
-	      helm repo update \
-	      helm install ingress haproxy-ingress/haproxy-ingress --set controller.kind=DaemonSet --set controller.hostNetwork=True --version $HAPROXY_INGRESS_VERSION'
-	    }
-	}
     }
 }
