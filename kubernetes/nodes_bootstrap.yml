@@ -59,8 +59,6 @@
         - /var/lib/docker/nfsdata
         - /var/lib/docker/nfsdata/esdata
         - /var/lib/docker/nfsdata/esbackup
-        - /var/lib/docker/nfsdata/prometheus
-        - /var/lib/docker/nfsdata/grafana
         - /var/lib/docker/nfsdata/jms
         - /var/lib/docker/nfsdata/gemini-ia
         - /var/lib/docker/nfsdata/extrator
