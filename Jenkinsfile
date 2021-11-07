@@ -110,6 +110,7 @@ pipeline {
                 }
             }
         }
+/*
         stage('Gerando_Imagem_Kubespray') {
             steps {
                 dir("${env.WORKSPACE}/kubespray") {
@@ -162,5 +163,14 @@ pipeline {
                 }
             }
         }
+*/
+	stage('Configurando_ingress_controller') {
+	    steps {
+	        dir("${env.WORKSPACE}/kubernetes") {
+		    sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
+			--private-key=id_rsa haproxy_ingress.yml'
+		}
+	    }	
+	}
     }
 }
