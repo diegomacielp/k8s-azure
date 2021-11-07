@@ -23,4 +23,4 @@
         repo_state: present
     - name: Atualizando repositorio heml
       command:
-        cmd: helm repo update
+        cmd: /usr/bin/helm repo update
