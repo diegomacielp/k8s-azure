@@ -189,10 +189,7 @@ pipeline {
 	    steps {
               sh 'helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts \
 	      helm repo update \
-	      helm install ingress haproxy-ingress/haproxy-ingress \
-	      --set controller.kind=DaemonSet \
-	      --set controller.hostNetwork=True \
-	      --version $HAPROXY_INGRESS_VERSION'
+	      helm install ingress haproxy-ingress/haproxy-ingress --set controller.kind=DaemonSet --set controller.hostNetwork=True --version $HAPROXY_INGRESS_VERSION'
 	    }
 	}
     }
