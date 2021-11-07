@@ -165,6 +165,12 @@ pipeline {
         }
 */
 	stage('Configurando_ingress_controller') {
+	    agent {
+                docker { 
+                    image 'ks:latest'
+                    args '-i --privileged -u 0:0 --network host --entrypoint='
+                }
+            }
 	    steps {
 	        dir("${env.WORKSPACE}/kubernetes") {
 		    sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
