@@ -36,8 +36,7 @@ pipeline {
         K8S_CNI = 'flannel'
         K8S_VERSION = "${param_k8s_version}"
         K8S_METRICS_SERVER_ENABLED = 'true'
-	K8S_DASHBOARD_VERSION = 'v2.3.1'
-	HAPROXY_INGRESS_VERSION = '0.12'    
+	K8S_DASHBOARD_VERSION = 'v2.3.1'   
 
     }
     stages {
