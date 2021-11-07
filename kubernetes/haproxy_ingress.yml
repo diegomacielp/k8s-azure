@@ -16,3 +16,7 @@
         dest: /usr/bin
         mode: 0775
         remote_src: yes
+    - name: Adicionando repositorio no helm
+      community.kubernetes.helm_repository:
+        name: haproxy-ingress
+        repo_url: https://haproxy-ingress.github.io/charts
