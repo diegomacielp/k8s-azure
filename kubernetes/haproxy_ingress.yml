@@ -6,7 +6,7 @@
         url: https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz
         dest: /tmp/helm.tgz
     - name: Descompactanto helm
-      - unarchive:
+      unarchive:
         src: /tmp/helm.tgz
         dest: /tmp/
         remote_src: yes
