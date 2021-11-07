@@ -40,7 +40,7 @@ pipeline {
 
     }
     stages {
-        stage('Provisionando_VMs') {
+/*        stage('Provisionando_VMs') {
             agent {
                 docker { 
                     image 'hashicorp/terraform:0.12.26'
@@ -162,7 +162,7 @@ pipeline {
                 }
             }
         }
-/*
+*/
 	stage('Configurando_ingress_controller') {
 	    agent {
                 docker { 
@@ -177,6 +177,5 @@ pipeline {
 		}
 	    }	
 	}
-*/
     }
 }
