@@ -115,17 +115,6 @@ resource "azurerm_public_ip" "template_public_ip_lb_ingress_interno" {
     environment = var.vm_environment_tag
   }
 }
-# Public IP Ingress Externo
-resource "azurerm_public_ip" "template_public_ip_lb_ingress_externo" {
-  name                = "${var.base_name}-lb-ingress-externo"
-  location            = var.vm_region
-  resource_group_name = var.vm_rg_name
-  allocation_method   = "Dynamic"
-  domain_name_label   = "lb-externo-${var.azure_client_id}"
-  tags = {
-    environment = var.vm_environment_tag
-  }
-}
 #LB Frontend
 resource "azurerm_lb" "template_lb" {
   name                = "${var.base_name}-lb"
@@ -136,10 +125,6 @@ resource "azurerm_lb" "template_lb" {
     name                 = "ingress-interno"
     public_ip_address_id = azurerm_public_ip.template_public_ip_lb_ingress_interno.id
   }
-  frontend_ip_configuration {
-    name                 = "ingress-externo"
-    public_ip_address_id = azurerm_public_ip.template_public_ip_lb_ingress_externo.id
-  }
 }
 #LB Rules
 resource "azurerm_lb_rule" "template_lb_ingress_interno_rule_80" {
@@ -148,10 +133,10 @@ resource "azurerm_lb_rule" "template_lb_ingress_interno_rule_80" {
   name                           = "${var.base_name}-lb_ingress_interno_rule_80"
   protocol                       = "Tcp"
   frontend_port                  = 80
-  backend_port                   = 30080
+  backend_port                   = 80
   frontend_ip_configuration_name = "ingress-interno"
   backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_interno_30080.id
+  probe_id                       = azurerm_lb_probe.template_lb_probe_interno_80.id
 }
 resource "azurerm_lb_rule" "template_lb_ingress_interno_rule_443" {
   resource_group_name            = var.vm_rg_name
@@ -159,103 +144,30 @@ resource "azurerm_lb_rule" "template_lb_ingress_interno_rule_443" {
   name                           = "${var.base_name}-lb_ingress_interno_rule_443"
   protocol                       = "Tcp"
   frontend_port                  = 443
-  backend_port                   = 30443
+  backend_port                   = 443
   frontend_ip_configuration_name = "ingress-interno"
   backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_interno_30443.id
+  probe_id                       = azurerm_lb_probe.template_lb_probe_interno_443.id
 }
-resource "azurerm_lb_rule" "template_lb_ingress_interno_rule_9101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_interno_rule_9101"
-  protocol                       = "Tcp"
-  frontend_port                  = 9101
-  backend_port                   = 30101
-  frontend_ip_configuration_name = "ingress-interno"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_interno_30101.id
-}
-
-resource "azurerm_lb_rule" "template_lb_ingress_externo_rule_80" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_externo_rule_80"
-  protocol                       = "Tcp"
-  frontend_port                  = 80
-  backend_port                   = 31080
-  frontend_ip_configuration_name = "ingress-externo"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_externo_31080.id
-}
-resource "azurerm_lb_rule" "template_lb_ingress_externo_rule_443" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_externo_rule_443"
-  protocol                       = "Tcp"
-  frontend_port                  = 443
-  backend_port                   = 31443
-  frontend_ip_configuration_name = "ingress-externo"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_externo_31443.id
-}
-resource "azurerm_lb_rule" "template_lb_ingress_externo_rule_9101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_ingress_externo_rule_9101"
-  protocol                       = "Tcp"
-  frontend_port                  = 9101
-  backend_port                   = 31101
-  frontend_ip_configuration_name = "ingress-externo"
-  backend_address_pool_id        = azurerm_lb_backend_address_pool.template_lb_backend_address_pool.id
-  probe_id                       = azurerm_lb_probe.template_lb_probe_externo_31101.id
-}
-
 #LB Probes
-resource "azurerm_lb_probe" "template_lb_probe_interno_30080" {
+resource "azurerm_lb_probe" "template_lb_probe_interno_80" {
   resource_group_name            = var.vm_rg_name
   loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_interno_30080"
-  port                           = 30080
+  name                           = "${var.base_name}-lb_probe_interno_80"
+  port                           = 80
 }
-resource "azurerm_lb_probe" "template_lb_probe_interno_30443" {
+resource "azurerm_lb_probe" "template_lb_probe_interno_443" {
   resource_group_name            = var.vm_rg_name
   loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_interno_30443"
+  name                           = "${var.base_name}-lb_probe_interno_443"
   port                           = 30443
 }
-resource "azurerm_lb_probe" "template_lb_probe_interno_30101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_interno_30101"
-  port                           = 30101
-}
-
-resource "azurerm_lb_probe" "template_lb_probe_externo_31080" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_externo_31080"
-  port                           = 31080
-}
-resource "azurerm_lb_probe" "template_lb_probe_externo_31443" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_externo_31443"
-  port                           = 31443
-}
-resource "azurerm_lb_probe" "template_lb_probe_externo_31101" {
-  resource_group_name            = var.vm_rg_name
-  loadbalancer_id                = azurerm_lb.template_lb.id
-  name                           = "${var.base_name}-lb_probe_externo_31101"
-  port                           = 31101
-}
-
 #LB Backend Address pool
 resource "azurerm_lb_backend_address_pool" "template_lb_backend_address_pool" {
   resource_group_name            = var.vm_rg_name
   loadbalancer_id                = azurerm_lb.template_lb.id
   name                           = "${var.base_name}-lb_backend_address_pool"
 }
-
 #LB Backend Address Pool Association
 resource "azurerm_network_interface_backend_address_pool_association" "template_lb_pool_association" {
   count                          = var.vm_count
