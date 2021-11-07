@@ -110,7 +110,6 @@ pipeline {
                 }
             }
         }
-/*
         stage('Gerando_Imagem_Kubespray') {
             steps {
                 dir("${env.WORKSPACE}/kubespray") {
@@ -163,7 +162,7 @@ pipeline {
                 }
             }
         }
-*/
+/*
 	stage('Configurando_ingress_controller') {
 	    agent {
                 docker { 
@@ -178,5 +177,6 @@ pipeline {
 		}
 	    }	
 	}
+*/
     }
 }
