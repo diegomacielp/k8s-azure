@@ -5,10 +5,8 @@
       get_url:
         url: https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz
         dest: /tmp/helm.tgz
-    - name: Instalando helm
-      ansible.builtin.unarchive:
+    - name: Descompactanto helm
+      - unarchive:
         src: /tmp/helm.tgz
-        files: linux-amd64/helm
-        dest: /usr/bin/
+        dest: /tmp/
         remote_src: yes
-        mode: 0755
