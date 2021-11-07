@@ -160,7 +160,7 @@ resource "azurerm_lb_probe" "template_lb_probe_interno_443" {
   resource_group_name            = var.vm_rg_name
   loadbalancer_id                = azurerm_lb.template_lb.id
   name                           = "${var.base_name}-lb_probe_interno_443"
-  port                           = 30443
+  port                           = 443
 }
 #LB Backend Address pool
 resource "azurerm_lb_backend_address_pool" "template_lb_backend_address_pool" {
