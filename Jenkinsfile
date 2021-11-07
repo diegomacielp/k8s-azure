@@ -180,14 +180,16 @@ pipeline {
             agent {
                 docker { 
                     image "dtzar/helm-kubectl"
-                    args "-i --network host --entrypoint="
+                    args "-i --privileged -u 0:0 --network host --entrypoint="
                 }
             }
 	    environment {
 	        KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
 	    }
 	    steps {
-              sh 'helm upgrade --install ingress haproxy-ingress/haproxy-ingress \
+              sh 'helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts \
+	      helm repo update \
+	      helm install ingress haproxy-ingress/haproxy-ingress \
 	      --set controller.kind=DaemonSet \
 	      --set controller.hostNetwork=True \
 	      --version $HAPROXY_INGRESS_VERSION'
