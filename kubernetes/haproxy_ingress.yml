@@ -10,4 +10,5 @@
         src: /tmp/helm.tgz
         files: linux-amd64/helm
         dest: /usr/bin/helm
+        remote_src: yes
         mode: 0755
