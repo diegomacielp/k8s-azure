@@ -1,4 +1,7 @@
 - hosts: kube-master
   gather_facts: false
   tasks:
-    - name: 
+    - name: Download helm
+      get_url:
+        url: https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz
+        dest: /tmp
