@@ -20,3 +20,4 @@
       kubernetes.core.helm_repository:
         repo_name: haproxy-ingress
         repo_url: https://haproxy-ingress.github.io/charts
+        repo_state: present
