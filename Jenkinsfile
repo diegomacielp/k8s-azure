@@ -187,10 +187,12 @@ pipeline {
                 KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
             }
 	    steps {
-	      sh 'helm upgrade --install ingress haproxy-ingress/haproxy-ingress \
-                 --set controller.kind=DaemonSet \
-                 --set controller.hostNetwork=True \
-                 --version '0.12''
+	        dir("${env.WORKSPACE}/kubernetes") {
+	            sh 'helm upgrade --install ingress haproxy-ingress/haproxy-ingress \
+                    --set controller.kind=DaemonSet \
+                    --set controller.hostNetwork=True \
+                    --version '0.12''
+	        }
 	    }
 	}	
 	stage('Configurando_dashboard') {
