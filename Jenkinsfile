@@ -175,22 +175,6 @@ pipeline {
                     sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node pje=true --overwrite ; done'
                 }
             }
-        }	
-	stage('Configurando_dashboard') {
-            agent {
-                docker { 
-                    image "dtzar/helm-kubectl"
-                    args "-i --privileged -u 0:0 --network host --entrypoint="
-                }
-            }
-            environment { 
-                KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
-            }
-            steps {
-                dir("${env.WORKSPACE}/kubernetes") {
-                    sh 'kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/${K8S_DASHBOARD_VERSION}/aio/deploy/recommended.yaml'
-                }
-            }
         }
     }
 }
