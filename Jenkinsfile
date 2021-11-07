@@ -172,7 +172,7 @@ pipeline {
             }
 	    steps {
 	        dir("${env.WORKSPACE}/kubernetes") {
-		    sh 'ansible-galaxy collection install kubernetes.core \
+		    sh 'ansible-galaxy collection install kubernetes.core; \
 			export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
 			--private-key=id_rsa haproxy_ingress.yml'
 		}
