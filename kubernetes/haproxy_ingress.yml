@@ -9,6 +9,6 @@
       ansible.builtin.unarchive:
         src: /tmp/helm.tgz
         files: linux-amd64/helm
-        dest: /usr/bin/helm
+        dest: /usr/bin/
         remote_src: yes
         mode: 0755
