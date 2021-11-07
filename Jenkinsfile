@@ -37,6 +37,7 @@ pipeline {
         K8S_VERSION = "${param_k8s_version}"
         K8S_METRICS_SERVER_ENABLED = 'true'
 	K8S_DASHBOARD_VERSION = 'v2.3.1'
+	HAPROXY_INGRESS_VERSION = '0.12'    
 
     }
     stages {
@@ -171,10 +172,26 @@ pipeline {
             }
             steps {
                 dir("${env.WORKSPACE}/kubernetes") { 
-                    sh 'kubectl get no -oname | grep infra | while read node ; do kubectl label $node infra=true --overwrite ; done'
-                    sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node pje=true --overwrite ; done'
+                    sh 'kubectl get no -oname | grep worker | while read node ; do kubectl label $node worker=true --overwrite ; done'
                 }
             }
         }
+	stage('Configurando_ingress_controller') {
+            agent {
+                docker { 
+                    image "dtzar/helm-kubectl"
+                    args "-i --network host --entrypoint="
+                }
+            }
+	    environment {
+	        KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
+	    }
+	    steps {
+              sh 'helm upgrade --install ingress haproxy-ingress/haproxy-ingress \
+	      --set controller.kind=DaemonSet \
+	      --set controller.hostNetwork=True \
+	      --version $HAPROXY_INGRESS_VERSION'
+	    }
+	}
     }
 }
