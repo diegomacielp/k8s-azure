@@ -10,3 +10,9 @@
         src: /tmp/helm.tgz
         dest: /tmp/
         remote_src: yes
+    - name: Copiando binario helm
+      copy:
+        src: /tmp/linux-amd64/helm
+        dest: /usr/bin
+        mode: 0775
+        remote_src: yes
