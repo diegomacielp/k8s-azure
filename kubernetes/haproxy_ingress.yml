@@ -21,6 +21,13 @@
         repo_name: haproxy-ingress
         repo_url: https://haproxy-ingress.github.io/charts
         repo_state: present
-    - name: Atualizando repositorio heml
+    - name: Atualizando repositorio helm
       command:
         cmd: /usr/bin/helm repo update
+    - name: Instalando ingress haproxy
+      command:
+        cmd: /usr/bin/helm ingress haproxy-ingress/haproxy-ingress
+        args:
+          - '--set controller.kind=DaemonSet'
+          - '--set controller.hostNetwork=True'
+          - '--version "0.12"'
