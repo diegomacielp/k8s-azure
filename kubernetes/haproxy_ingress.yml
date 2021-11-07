@@ -14,9 +14,9 @@
       copy:
         src: /tmp/linux-amd64/helm
         dest: /usr/bin
-        mode: 0775
+        mode: 0755
         remote_src: yes
     - name: Adicionando repositorio no helm
-      community.kubernetes.helm_repository:
+      kubernetes.core.helm_repository:
         name: haproxy-ingress
         repo_url: https://haproxy-ingress.github.io/charts
