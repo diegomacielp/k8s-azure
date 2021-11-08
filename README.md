@@ -27,3 +27,4 @@ Caso necessite personalizar as VMs como quantidade de máquinas, sistema operaio
 <img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/Terraform_vms.png">
 
 ## Build da imagem Kubespray
+Para a criação da imagem do kubespray, é realizado um clone do repositório https://github.com/kubespray/kubespray.git, nesse projeto contém o Dockerfile com as especificações necessárias para o build da imagem. É criado o par de chaves SSH para que as máquinas consigam ser acessadas. Com isso o jenkins cria uma imagem chamada 'ks' e executa um novo container a partir dessa nova imagem que utiliza um playbook ansible chamado nodes_bootstrap.yml para fazer, simultaneamente nas 4 VMs, configurações como timezone, criação de partição de disco para o diretório do Docker, instalação e atualização de pacotes, ativação e desativação de serviços e configuração de compartilhamentos NFS no node master.
