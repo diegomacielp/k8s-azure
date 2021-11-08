@@ -27,5 +27,13 @@ Caso necessite personalizar as VMs como quantidade de máquinas, sistema operaio
 <img src="https://github.com/diegomacielp/k8s-azure/blob/main/images/Terraform_vms.png">
 
 ## Build da imagem Kubespray
-Para a criação da imagem do kubespray, é realizado um clone do repositório https://github.com/kubespray/kubespray.git, nesse projeto contém o Dockerfile com as especificações necessárias para o build da imagem. É criado o par de chaves SSH para que as máquinas consigam ser acessadas. Com isso o jenkins cria uma imagem chamada 'ks' e executa um novo container a partir dessa nova imagem que utiliza um playbook ansible chamado nodes_bootstrap.yml para fazer, simultaneamente nas 4 VMs, configurações como timezone, criação de partição de disco para o diretório do Docker, instalação e atualização de pacotes, ativação e desativação de serviços e configuração de compartilhamentos NFS no node master.
+Para a criação da imagem do kubespray, é realizado um clone do repositório https://github.com/kubespray/kubespray.git, nesse projeto contém o Dockerfile com as especificações necessárias para o build da imagem. É criado o par de chaves SSH para que as máquinas consigam ser acessadas. 
 
+## Preparação das VMs
+O jenkins cria uma imagem chamada 'ks' e executa um novo container a partir dessa nova imagem que utiliza um playbook ansible chamado nodes_bootstrap.yml para fazer, simultaneamente nas 4 VMs, configurações como timezone, criação de partição de disco para o diretório do Docker, instalação e atualização de pacotes, ativação e desativação de serviços e configuração de compartilhamentos NFS no node master.
+Caso seja necessário personalizar as VMs como quantidade de máquinas, sistema operaional, tamanho de disco e etc, edite o arquivo terraform/terraform.tfvars da melhor forma que atenda sua necessidade.
+
+## Instalação do HAProxy ingress
+A instalação do haproxy ingress é feita via helm que ocorre através do playbook ansible haproxy_ingress.yml que baixa o binário do helm no nó master, adiciona o repositório do haproxy e realiza a instalação.
+
+## Instalação do Kubernetes Dashboard
