@@ -174,6 +174,7 @@ pipeline {
             }
 	    environment { 
                 KUBECONFIG = "${env.WORKSPACE}/kubernetes/admin.conf"
+	    }
 	    steps {
 	        dir("${env.WORKSPACE}/kubernetes") {
 		    sh 'helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts'
