@@ -15,7 +15,7 @@ pipeline {
         TERRAFORM_VM_VNET_NAME = "${param_terraform_vm_vnet_name}"
         TERRAFORM_VM_SUBNET_NAME = "${param_terraform_vm_subnet_name}"
         TERRAFORM_VM_ENVIRONMENT = "K8S Setup"
-        TERRAFORM_VM_COUNT = 4
+        TERRAFORM_VM_COUNT = 3
         TERRAFORM_BASE_NAME = "k8s-setup"
         TERRAFORM_VM_PROFILE_USER = "k8s"
         TERRAFORM_VM_IP_BASE = "192.168.1.4"
