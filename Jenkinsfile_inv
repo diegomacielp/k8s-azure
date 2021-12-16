@@ -7,6 +7,21 @@ pipeline {
         TERRAFORM_VM_IP_BASE = "192.168.1.4"
     }
     stages {
+    	stage('Gerando_Imagem_Kubespray') {
+            steps {
+                dir("${env.WORKSPACE}/kubespray") {
+                    sh '[ -d .git ] || git init'
+                    sh 'git config http.sslVerify false'
+                    checkout([  $class: "GitSCM",
+                            branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
+                            extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
+                            userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
+                            ])
+                    sh 'sed -e "/ENV LANG=C.UTF-8/d" -e "/^FROM/a ENV LANG=C.UTF-8" -i Dockerfile'
+                    sh 'docker build -t ks .'
+                }
+            }
+        }
         stage('Configurando_Cluster_Kubernetes') {
             agent {
                 docker { 
