@@ -5,6 +5,7 @@ pipeline {
         JENKINS_GID = sh(returnStdout: true, script: 'id jenkins -g').trim()
         TERRAFORM_VM_COUNT = 4
         TERRAFORM_VM_IP_BASE = "192.168.1.4"
+        KUBESPRAY_VERSION = 'v2.15.0'
     }
     stages {
     	stage('Gerando_Imagem_Kubespray') {
