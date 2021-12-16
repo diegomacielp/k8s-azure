@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+    environment {
+        JENKINS_ID = sh(returnStdout: true, script: 'id jenkins -u').trim()
+        JENKINS_GID = sh(returnStdout: true, script: 'id jenkins -g').trim()
+        AZURE_SUBSCRIPTION_ID = "${param_azure_subscription_id}"
+        AZURE_TENANT_ID = "${param_azure_tenant_id}"
+        AZURE_CLIENT_ID = "${param_azure_client_id}"
+        AZURE_CLIENT_SECRET = credentials('azure_client_secret')
+        AZURE_NODES_ADMIN_SSH_PUBKEY = credentials('azure_nodes_admin_ssh_pubkey')
+        AZURE_NODES_ADMIN_SSH_PRIVKEY = credentials('azure_nodes_admin_ssh_privkey')
+        TERRAFORM_STATE_DIR = "${param_terraform_state_dir}"
+        TERRAFORM_VM_REGION = "${param_terraform_vm_region}"
+        TERRAFORM_VM_RG_NAME = "${param_terraform_vm_rg_name}"
+        TERRAFORM_VM_VNET_NAME = "${param_terraform_vm_vnet_name}"
+        TERRAFORM_VM_SUBNET_NAME = "${param_terraform_vm_subnet_name}"
+        TERRAFORM_VM_ENVIRONMENT = "K8S Setup"
+        TERRAFORM_VM_COUNT = 2
+        TERRAFORM_BASE_NAME = "k8s-setup"
+        TERRAFORM_VM_PROFILE_USER = "k8s"
+        TERRAFORM_VM_IP_BASE = "192.168.1.4"
+        TERRAFORM_VM_SIZE = "Standard_B4ms"
+        TERRAFORM_VM_ENVIRONMENT_TAG = "K8S Setup"
+        TERRAFORM_VM_IMAGE_PUBLISHER = "OpenLogic"
+        TERRAFORM_VM_IMAGE_OFFER = "CentOS"
+        TERRAFORM_VM_IMAGE_SKU = "7_9"
+        TERRAFORM_VM_IMAGE_VERSION = "latest"
+        TERRAFORM_VM_DISK_CACHING = "ReadWrite"
+        TERRAFORM_VM_DISK_CREATE_OPTION = "FromImage"
+        TERRAFORM_VM_DISK_MANAGED_DISK_TYPE = "Standard_LRS"
+        TERRAFORM_VM_MANAGED_DISK_STORAGE_ACCOUNT_TYPE = "Standard_LRS"
+        TERRAFORM_VM_MANAGED_DISK_CREATE_OPTION = "Empty"
+        TERRAFORM_VM_MANAGED_DISK_SIZE = 50
+        TERRAFORM_VM_MANAGED_DISK_LUN_BASE = 1
+        KUBESPRAY_VERSION = 'v2.15.0'
+        K8S_CNI = 'flannel'
+        K8S_VERSION = "${param_k8s_version}"
+        K8S_METRICS_SERVER_ENABLED = 'true'
+	      K8S_DASHBOARD_VERSION = 'v2.3.1'   
+
+    }
+    stages {
+        stage('Configurando_Cluster_Kubernetes') {
+            agent {
+                docker { 
+                    image 'ks:latest'
+                    args '-i --privileged -u 0:0 --network host --entrypoint='
+                }
+            }	    
+            steps {
+                dir("${env.WORKSPACE}/kubernetes") {
+                    sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
+                        --private-key=id_rsa --extra-var kube_network_plugin=$K8S_CNI --extra-var kube_version=$K8S_VERSION \
+                        --extra-var metrics_server_enabled=$K8S_METRICS_SERVER_ENABLED /kubespray/cluster.yml' 
+                    sh 'rm -f admin.conf || true'
+                    sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
+			                  --private-key=id_rsa -m fetch -a "src=/etc/kubernetes/admin.conf dest=./ flat=yes" \
+                        $(cat inventory.ini |grep -v "^$" | fgrep "[kube-master]" -A1 | tail -1)'
+                    sh 'chown ${JENKINS_ID}:${JENKINS_GID} admin.conf'
+                    sh 'chmod 600 admin.conf'		
+                }
+            }
+        }
+    }
+}
