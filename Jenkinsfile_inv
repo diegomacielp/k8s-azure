@@ -8,32 +8,17 @@ pipeline {
         KUBESPRAY_VERSION = 'v2.15.0'
     }
     stages {
-    	stage('Gerando_Imagem_Kubespray') {
-            steps {
-                dir("${env.WORKSPACE}/kubespray") {
-                    sh '[ -d .git ] || git init'
-                    sh 'git config http.sslVerify false'
-                    checkout([  $class: "GitSCM",
-                            branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
-                            extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
-                            userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
-                            ])
-                    sh 'sed -e "/ENV LANG=C.UTF-8/d" -e "/^FROM/a ENV LANG=C.UTF-8" -i Dockerfile'
-                    sh 'docker build -t ks .'
-                }
-            }
-        }
         stage('Preparando_VMs') {
             agent {
                 docker { 
-                    image 'ks:latest'
+                    image 'ubuntu:latest'
                     args '-i --privileged -u 0:0 --network host --entrypoint='
                 }
             } 
             steps {
                 dir("${env.WORKSPACE}/kubernetes") {
                     sh 'printenv'
-                    sh 'for (( i=${TERRAFORM_VM_COUNT}-1; i>0; i-- )) do sed -e \"1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\n/\" -e \"/^.kube-node.$/a k8s-worker${i}\" -i inventory.ini ; done'
+                    sh '/bin/bash for (( i=${TERRAFORM_VM_COUNT}-1; i>0; i-- )) do sed -e \"1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\n/\" -e \"/^.kube-node.$/a k8s-worker${i}\" -i inventory.ini ; done'
                 }
             }
         }
