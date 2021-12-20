@@ -21,6 +21,7 @@ pipeline {
                     sh 'echo -----------------------'
                     sh 'printenv'
                     sh 'echo -----------------------'
+                    sh 'sed -e "1s/^/k8s-master1 ansible_ssh_host=${TERRAFORM_VM_IP_BASE}0 ip=${TERRAFORM_VM_IP_BASE}0\n/" -i inventory.ini'
                     sh '''
                     for i in $(seq 1 ${TERRAFORM_VM_COUNT}) ; do
                       echo "k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}" >> temp.txt
