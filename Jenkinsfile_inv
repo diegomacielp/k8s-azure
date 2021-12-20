@@ -22,8 +22,7 @@ pipeline {
                     sh 'printenv'
                     sh 'echo -----------------------'
                     sh '''
-                    for (( i=1; i<${TERRAFORM_VM_COUNT}; i++ ))
-                    do
+                    for i in $(seq 1 ${TERRAFORM_VM_COUNT}) ; do
                       echo "k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}" >> temp.txt
                     done
                     cat temp.txt inventory.ini > temp2.txt
