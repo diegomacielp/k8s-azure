@@ -21,10 +21,10 @@ pipeline {
                     sh 'echo -----------------------'
                     sh 'printenv'
                     sh 'echo -----------------------'
-                    sh '''#!/bin/bash -xi 
+                    sh """#!/bin/bash -xi 
                     for (( i=${TERRAFORM_VM_COUNT}-1; i>0; i-- )) do 
                       sed -e "1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\n/" -i inventory.ini ;
-                    done'''
+                    done"""
                 }
             }
         }
