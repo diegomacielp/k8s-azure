@@ -135,7 +135,7 @@ pipeline {
             steps {
                 dir("${env.WORKSPACE}/kubernetes") {
 		    sh '''
-		        for (( i=3; i>0; i-- )) ; do
+		        for i in $(seq ${TERRAFORM_VM_COUNT} -1 1) ; do
 		            sed -e "1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\\n/" -e "/^.kube-node.$/a k8s-worker${i}" -i inventory.ini
 		        done
 		        sed -e "1s/^/k8s-master1 ansible_ssh_host=${TERRAFORM_VM_IP_BASE}0 ip=${TERRAFORM_VM_IP_BASE}0\\n/" -i inventory.ini
