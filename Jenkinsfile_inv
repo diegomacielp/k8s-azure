@@ -8,19 +8,30 @@ pipeline {
         KUBESPRAY_VERSION = 'v2.15.0'
     }
     stages {
+        stage('Gerando_Imagem_Kubespray') {
+            steps {
+                dir("${env.WORKSPACE}/kubespray") {
+                    sh '[ -d .git ] || git init'
+                    sh 'git config http.sslVerify false'
+                    checkout([  $class: "GitSCM",
+                            branches: [[name: "refs/tags/${KUBESPRAY_VERSION}"]],
+                            extensions: [[$class: "CloneOption", shallow: false, depth: 0, reference: ""]],
+                            userRemoteConfigs: [[url: "https://github.com/kubespray/kubespray.git"]]
+                            ])
+                    sh 'sed -e "/ENV LANG=C.UTF-8/d" -e "/^FROM/a ENV LANG=C.UTF-8" -i Dockerfile'
+                    sh 'docker build -t ks .'
+                }
+            }
+        }
         stage('Preparando_VMs') {
             agent {
                 docker { 
-                    image 'ubuntu:latest'
+                    image 'ks'
                     args '-i --privileged -u 0:0 --network host --entrypoint='
                 }
             } 
             steps {
                 dir("${env.WORKSPACE}/kubernetes") {
-                    sh 'export'
-                    sh 'echo -----------------------'
-                    sh 'printenv'
-                    sh 'echo -----------------------'
                     sh '''
                     #for i in $(seq ${TERRAFORM_VM_COUNT} -1 1) ; do
                     for (( i=3; i>0; i-- )) ; do
