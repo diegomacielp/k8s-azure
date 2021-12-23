@@ -20,7 +20,7 @@ pipeline {
                     sh '''
                     COUNT=$(expr $TERRAFORM_VM_COUNT - 1)
                     echo "iniciando for"
-                    for i in $(seq $COUNT 1); do
+                    for i in $(seq 1 $COUNT); do
                       echo "dentro do for"
                       sed -e "1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\\n/" -e "/^.kube-node.$/a k8s-worker${i}" -i inventory.ini
                     done
