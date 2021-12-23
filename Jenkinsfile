@@ -158,6 +158,13 @@ pipeline {
             }	    
             steps {
                 dir("${env.WORKSPACE}/kubernetes") {
+		    sh '''
+		        COUNT=$(expr $TERRAFORM_VM_COUNT - 1)
+			for i in $(seq --separator=" " $COUNT -1 1); do
+			    sed -e "1s/^/k8s-worker${i} ansible_ssh_host=${TERRAFORM_VM_IP_BASE}${i} ip=${TERRAFORM_VM_IP_BASE}${i}\\n/" -e "/^.kube-node.$/a k8s-worker${i}" -i inventory.ini
+                        done
+			sed -e "1s/^/k8s-master1 ansible_ssh_host=${TERRAFORM_VM_IP_BASE}0 ip=${TERRAFORM_VM_IP_BASE}0\\n/" -i inventory.ini
+	            '''
                     sh 'export ANSIBLE_HOST_KEY_CHECKING=False ; ansible-playbook -i inventory.ini --user=${TERRAFORM_VM_PROFILE_USER} --become --become-user=root \
                         --private-key=id_rsa --extra-var kube_network_plugin=$K8S_CNI --extra-var kube_version=$K8S_VERSION \
                         --extra-var metrics_server_enabled=$K8S_METRICS_SERVER_ENABLED /kubespray/cluster.yml' 
